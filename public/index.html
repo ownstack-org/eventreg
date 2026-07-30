@@ -1,0 +1,42 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Events</title>
+<style>
+  :root { color-scheme: light dark; }
+  body { font: 16px/1.5 system-ui, sans-serif; max-width: 640px; margin: 6vh auto; padding: 0 20px; }
+  h1 { font-size: 1.4rem; }
+  .card { border: 1px solid #8883; border-radius: 10px; padding: 16px 18px; margin: 14px 0; }
+  .card h2 { font-size: 1.1rem; margin: 0 0 4px; }
+  .meta { opacity: .7; font-size: .85rem; }
+  .seats { font-size: .85rem; margin-top: 8px; }
+  a.btn { display: inline-block; margin-top: 10px; padding: 7px 14px; border-radius: 8px; background: #111; color: #fff; text-decoration: none; font-size: .9rem; }
+  @media (prefers-color-scheme: dark) { a.btn { background: #eee; color: #111; } }
+</style>
+</head>
+<body>
+<h1>Events</h1>
+<div id="list">Loading...</div>
+<script>
+async function load() {
+  const el = document.getElementById('list');
+  try {
+    const r = await fetch('/api/events');
+    const { events } = await r.json();
+    if (!events || !events.length) { el.textContent = 'No open events right now.'; return; }
+    el.innerHTML = events.map(e => `
+      <div class="card">
+        <h2>${escapeHtml(e.name)}</h2>
+        <div class="meta">${e.starts_at ? new Date(e.starts_at).toLocaleString() : ''}${e.location ? ' &middot; ' + escapeHtml(e.location) : ''}</div>
+        <div class="seats">${e.full ? 'Sold out' : e.seats_remaining + ' seats left'}${e.dev_seats_remaining > 0 ? ' &middot; ' + e.dev_seats_remaining + ' free developer seats' : ''}</div>
+        ${e.full ? '' : `<a class="btn" href="/register.html?event=${encodeURIComponent(e.slug)}">Register</a>`}
+      </div>`).join('');
+  } catch (err) { el.textContent = 'Could not load events.'; }
+}
+function escapeHtml(s){return String(s??'').replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));}
+load();
+</script>
+</body>
+</html>
