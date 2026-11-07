@@ -28,4 +28,14 @@ class Registration < ApplicationRecord
       created_at: created_at
     }
   end
+
+  # What an unauthenticated caller may learn about an existing registration:
+  # that it exists and what kind of seat it holds. No personal details.
+  def as_confirmation_json
+    {
+      event: event.slug,
+      seat_type: seat_type,
+      created_at: created_at
+    }
+  end
 end

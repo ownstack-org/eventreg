@@ -93,6 +93,7 @@ GEM
     debug (1.11.1)
       irb (~> 1.10)
       reline (>= 0.3.8)
+    diff-lcs (1.6.2)
     drb (2.2.3)
     erb (6.0.6)
     erubi (1.13.1)
@@ -230,6 +231,23 @@ GEM
     regexp_parser (2.12.0)
     reline (0.6.3)
       io-console (~> 0.5)
+    rspec-core (3.13.7)
+      rspec-support (~> 3.13.0)
+    rspec-expectations (3.13.6)
+      diff-lcs (>= 1.2.0, < 2.0)
+      rspec-support (~> 3.13.0)
+    rspec-mocks (3.13.9)
+      diff-lcs (>= 1.2.0, < 2.0)
+      rspec-support (~> 3.13.0)
+    rspec-rails (8.1.0)
+      actionpack (>= 7.2)
+      activesupport (>= 7.2)
+      railties (>= 7.2)
+      rspec-core (>= 3.13.0, < 5.0.0)
+      rspec-expectations (>= 3.13.0, < 5.0.0)
+      rspec-mocks (>= 3.13.0, < 5.0.0)
+      rspec-support (>= 3.13.0, < 5.0.0)
+    rspec-support (3.13.8)
     rubocop (1.88.2)
       json (~> 2.3)
       language_server-protocol (~> 3.17.0.2)
@@ -260,6 +278,7 @@ GEM
       rubocop-rails (>= 2.30)
     ruby-progressbar (1.13.0)
     securerandom (0.4.1)
+    simplecov (1.3.2)
     solid_cache (1.0.10)
       activejob (>= 7.2)
       activerecord (>= 7.2)
@@ -313,7 +332,9 @@ DEPENDENCIES
   puma (>= 5.0)
   rack-cors
   rails (~> 8.1.3)
+  rspec-rails (~> 8.0)
   rubocop-rails-omakase
+  simplecov
   solid_cache
   solid_queue
   thruster
@@ -344,6 +365,7 @@ CHECKSUMS
   crass (1.0.7) sha256=94868719948664c89ddcaf0a37c65048413dfcb1c869470a5f7a7ceb5390b295
   date (3.5.1) sha256=750d06384d7b9c15d562c76291407d89e368dda4d4fff957eb94962d325a0dc0
   debug (1.11.1) sha256=2e0b0ac6119f2207a6f8ac7d4a73ca8eb4e440f64da0a3136c30343146e952b6
+  diff-lcs (1.6.2) sha256=9ae0d2cba7d4df3075fe8cd8602a8604993efc0dfa934cff568969efb1909962
   drb (2.2.3) sha256=0b00d6fdb50995fe4a45dea13663493c841112e4068656854646f418fda13373
   erb (6.0.6) sha256=a9b24986700f5bf127c4f297c5403c3ca41b83b0a316c0cd09a096b56e644ae5
   erubi (1.13.1) sha256=a082103b0885dbc5ecf1172fede897f9ebdb745a4b97a5e8dc63953db1ee4ad9
@@ -406,6 +428,11 @@ CHECKSUMS
   rdoc (8.0.0) sha256=03bf8c08a9639658855a0cfd77c0abca8325c227693f7f33f82957811348c469
   regexp_parser (2.12.0) sha256=35a916a1d63190ab5c9009457136ae5f3c0c7512d60291d0d1378ba18ce08ebb
   reline (0.6.3) sha256=1198b04973565b36ec0f11542ab3f5cfeeec34823f4e54cebde90968092b1835
+  rspec-core (3.13.7) sha256=c64ff16d9788119805cbc6a3f4b6d87cc22417c2d25976a3330de136896b5469
+  rspec-expectations (3.13.6) sha256=bf538ca6d367ff5b0d85a87fdb5c0c6038f2cd1308a0eeba07476caa02d22f35
+  rspec-mocks (3.13.9) sha256=ea5c7ff3054a6098ca6039aacef80aec69d5a8a3ef80be8fc88337359b672a30
+  rspec-rails (8.1.0) sha256=5e6c6a4e7f7d644b56e412d410824f6480c1e5a9c61b8448998236b4a4dbf3be
+  rspec-support (3.13.8) sha256=e4160030309b7e3e9d9863dfe720a35dfcc577162f5402cd68fc8c5258a0ffd6
   rubocop (1.88.2) sha256=8def251c90cd955feb4daa3edc0ab56893250c4ce90ef81e6c80c03f9a939bbf
   rubocop-ast (1.50.0) sha256=b9ca88300da0803ee222ad20cdb30494c0a784eed06fdc35d254b06d662788db
   rubocop-performance (1.26.1) sha256=cd19b936ff196df85829d264b522fd4f98b6c89ad271fa52744a8c11b8f71834
@@ -413,6 +440,7 @@ CHECKSUMS
   rubocop-rails-omakase (1.1.0) sha256=2af73ac8ee5852de2919abbd2618af9c15c19b512c4cfc1f9a5d3b6ef009109d
   ruby-progressbar (1.13.0) sha256=80fc9c47a9b640d6834e0dc7b3c94c9df37f08cb072b7761e4a71e22cff29b33
   securerandom (0.4.1) sha256=cc5193d414a4341b6e225f0cb4446aceca8e50d5e1888743fac16987638ea0b1
+  simplecov (1.3.2) sha256=2a22ec1759f1b8db60881a2e038758956fc69ef93ed669be0bde0678de6d0e85
   solid_cache (1.0.10) sha256=bc05a2fb3ac78a6f43cbb5946679cf9db67dd30d22939ededc385cb93e120d41
   solid_queue (1.5.1) sha256=ecd2ee3b3f09c2f210b1176d68264f7dcca4d28b1a5d2d1ad9f57dc1e7a750df
   thor (1.5.0) sha256=e3a9e55fe857e44859ce104a84675ab6e8cd59c650a49106a05f55f136425e73

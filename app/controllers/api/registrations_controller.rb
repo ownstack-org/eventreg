@@ -9,9 +9,11 @@ module Api
       if email.present?
         existing = event.registrations.find_by(email: email)
         if existing
+          # Anyone can POST any email, so this answer must not hand back the
+          # person's name, phone or who registered them: only that a seat exists.
           return render json: {
             status: "already_registered",
-            registration: existing.as_public_json,
+            registration: existing.as_confirmation_json,
             seats_remaining: event.seats_remaining,
             dev_seats_remaining: event.dev_seats_remaining
           }, status: :ok
