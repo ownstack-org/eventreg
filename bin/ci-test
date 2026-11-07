@@ -1,0 +1,52 @@
+#!/usr/bin/env bash
+# eventreg's test gate.
+#
+# Runs the whole rspec suite with SimpleCov's gate on (.simplecov: 90% lines
+# and 90% branches over every file in app/ and lib/) and exits non-zero if any
+# example fails or coverage is below the gate.
+#
+# OwnStack runs this before every eventreg deploy: the app's testing config is
+# test_command=bin/ci-test, test_runner=stack, test_image=ruby:3.4.7,
+# tests_block_deploy=true. It then runs in a throwaway container on the deploy
+# stack with the checkout at /app and a cache volume at /cache. Run it locally
+# the same way:
+#
+#   docker run --rm -e OWNSTACK_TEST_GATE=1 -v "$PWD":/app -w /app ruby:3.4.7 bin/ci-test
+#
+# or, with Postgres running and gems installed, just `COVERAGE=1 bundle exec rspec`.
+set -euo pipefail
+cd "$(dirname "$0")/.."
+
+export RAILS_ENV=test COVERAGE=1
+# The gate is only a gate with its thresholds present.
+[ -f .simplecov ] || { echo ".simplecov is missing: no coverage gate to run" >&2; exit 1; }
+# SimpleCov treats a set TEST_ENV_NUMBER as one worker of a parallel run and
+# then skips the gate, so it must not leak in.
+unset TEST_ENV_NUMBER
+
+# Throwaway container (OWNSTACK_TEST_GATE=1, root): bring up Postgres and
+# install gems. Outside one, use what is already running.
+if [ "${OWNSTACK_TEST_GATE:-}" = "1" ] && [ "$(id -u)" = "0" ]; then
+  echo "=====> Installing Postgres"
+  export DEBIAN_FRONTEND=noninteractive
+  apt-get update -qq >/dev/null
+  apt-get install -y -qq --no-install-recommends postgresql >/dev/null
+  pg_conf=$(ls -d /etc/postgresql/*/main | head -1)
+  sed -i 's/^\(local\|host\)\(.*\)\(peer\|scram-sha-256\|md5\)$/\1\2trust/' "$pg_conf/pg_hba.conf"
+  pg_ver=$(basename "$(dirname "$pg_conf")")
+  pg_ctlcluster "$pg_ver" main restart
+  export DATABASE_URL=postgres://postgres@localhost/eventreg_test
+
+  if [ -d /cache ]; then
+    export BUNDLE_PATH=/cache/bundle
+  fi
+  echo "=====> bundle install"
+  bundle config set --local without 'development' >/dev/null
+  bundle install --jobs 4 --retry 3 --quiet
+fi
+
+echo "=====> Preparing the test database"
+bin/rails db:create db:schema:load >/dev/null
+
+echo "=====> rspec (coverage gate: .simplecov)"
+exec bundle exec rspec --format progress

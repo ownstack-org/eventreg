@@ -40,4 +40,11 @@ group :development, :test do
 
   # Omakase Ruby styling [https://github.com/rails/rubocop-rails-omakase/]
   gem "rubocop-rails-omakase", require: false
+
+  gem "rspec-rails", "~> 8.0"
+end
+
+group :test do
+  # Coverage gate (.simplecov), run by bin/ci-test before every deploy.
+  gem "simplecov", require: false
 end
