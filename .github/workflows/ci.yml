@@ -7,7 +7,9 @@ on:
 
 jobs:
   scan_ruby:
-    runs-on: ubuntu-latest
+    # Pinned: ubuntu-latest is now 26.04, where setup-ruby lacks the 3.4.7
+    # pinned in .ruby-version and the Gemfile. 24.04 still has it.
+    runs-on: ubuntu-24.04
 
     steps:
       - name: Checkout code
@@ -16,7 +18,6 @@ jobs:
       - name: Set up Ruby
         uses: ruby/setup-ruby@v1
         with:
-          ruby-version: '3.4'
           bundler-cache: true
 
       - name: Scan for common Rails security vulnerabilities using static analysis
@@ -26,7 +27,9 @@ jobs:
         run: bin/bundler-audit
       
   lint:
-    runs-on: ubuntu-latest
+    # Pinned: ubuntu-latest is now 26.04, where setup-ruby lacks the 3.4.7
+    # pinned in .ruby-version and the Gemfile. 24.04 still has it.
+    runs-on: ubuntu-24.04
     env:
       RUBOCOP_CACHE_ROOT: tmp/rubocop
     steps:
@@ -36,7 +39,6 @@ jobs:
       - name: Set up Ruby
         uses: ruby/setup-ruby@v1
         with:
-          ruby-version: '3.4'
           bundler-cache: true
 
       - name: Prepare RuboCop cache
